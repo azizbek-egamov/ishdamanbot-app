@@ -528,6 +528,60 @@ export default function EarnPage({ onNavigateSpin }) {
               </div>
             )}
 
+            {selectedTask.verification_type === 'manual_username' && (
+              <div className="flex flex-col gap-3">
+                {selectedTask.url && (
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-on-surface-variant font-medium">
+                      1-qadam: Vazifa havolasiga o'ting:
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        haptic.impact('medium');
+                        openLink(selectedTask.url);
+                      }}
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-tertiary border border-tertiary/30 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="material-symbols-outlined text-[18px] shrink-0 text-tertiary">link</span>
+                        <span className="truncate text-left text-white font-medium">{selectedTask.url}</span>
+                      </div>
+                      <span className="shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-tertiary text-on-tertiary font-bold shadow-neon-blue">
+                        O'tish
+                      </span>
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-on-surface-variant font-medium">
+                    {selectedTask.url ? "2-qadam: Profilingiz username'ini kiriting:" : "Profilingiz username'ini kiriting:"}
+                  </label>
+                  <div className="relative flex items-center rounded-xl bg-surface-container-lowest border border-white/10 focus-within:border-primary-container overflow-hidden transition-colors">
+                    <span className="px-3.5 py-2.5 bg-surface-container-high text-primary-fixed-dim font-mono font-bold text-sm select-none border-r border-white/10 shrink-0">
+                      @
+                    </span>
+                    <input
+                      type="text"
+                      value={proofText.replace(/^@+/, '')}
+                      onChange={(e) => {
+                        const cleanVal = e.target.value.replace(/^@+/, '').trim();
+                        setProofText(cleanVal ? `@${cleanVal}` : '');
+                      }}
+                      placeholder="username"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      className="w-full px-3.5 py-2.5 bg-transparent text-white text-sm focus:outline-none font-mono placeholder:text-on-surface-variant/40"
+                    />
+                  </div>
+                  <span className="text-[10px] text-on-surface-variant font-mono">
+                    Masalan: <b>@{user?.username || 'username'}</b> (shartni bajargan profilingiz)
+                  </span>
+                </div>
+              </div>
+            )}
+
             {selectedTask.verification_type === 'manual_screenshot' && (
               <div className="flex flex-col gap-3">
                 {selectedTask.url && (
@@ -612,7 +666,8 @@ export default function EarnPage({ onNavigateSpin }) {
                 submitting ||
                 (selectedTask.verification_type === 'timer' && timerSeconds > 0) ||
                 (selectedTask.verification_type === 'manual_screenshot' && !screenshotUrl) ||
-                (selectedTask.verification_type === 'manual_id' && !proofText.trim())
+                (selectedTask.verification_type === 'manual_id' && !proofText.trim()) ||
+                (selectedTask.verification_type === 'manual_username' && (!proofText.trim() || proofText.trim() === '@'))
               }
               onClick={handleSubmitTask}
               className="w-full py-3.5 rounded-xl bg-primary-container text-white font-bold text-sm shadow-neon-red disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2"
