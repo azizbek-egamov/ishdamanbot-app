@@ -37,7 +37,7 @@ export default function ReferPage() {
 
   // 1. Telegram Mini App havolasi
   const directWebAppLink = botAppShortName
-    ? `https://t.me/${botUsername}/${botAppShortName}?startapp=${refCode}`
+    ? `https://t.me/${botUsername}?startapp=${refCode}`
     : `https://t.me/${botUsername}?startapp=${refCode}`;
   const telegramInviteLink = data?.telegram_invite_link || directWebAppLink;
 
