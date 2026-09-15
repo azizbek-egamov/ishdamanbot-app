@@ -34,6 +34,12 @@ export function getImageUrl(path) {
     }
   }
 
+  if (!backendUrl) {
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      backendUrl = 'https://core.ishdaman.uz';
+    }
+  }
+
   backendUrl = backendUrl.replace(/\/+$/, '');
 
   return backendUrl ? `${backendUrl}${relativePath}` : relativePath;

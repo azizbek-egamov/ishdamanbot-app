@@ -1,8 +1,28 @@
 import axios from 'axios';
 
-// Always use relative /api path so Vite proxy handles it (avoids CORS entirely)
+const getApiBaseUrl = () => {
+  const envApi = import.meta.env.VITE_API_URL;
+  if (envApi && (envApi.startsWith('http://') || envApi.startsWith('https://'))) {
+    return envApi.replace(/\/+$/, '');
+  }
+
+  const envBackend = import.meta.env.VITE_BACKEND_URL;
+  if (envBackend && (envBackend.startsWith('http://') || envBackend.startsWith('https://'))) {
+    return `${envBackend.replace(/\/+$/, '')}/api`;
+  }
+
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return '/api';
+    }
+  }
+
+  return 'https://core.ishdaman.uz/api';
+};
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },

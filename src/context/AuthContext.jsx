@@ -242,9 +242,11 @@ export function AuthProvider({ children }) {
     } else if (import.meta.env.VITE_WS_URL) {
       const base = import.meta.env.VITE_WS_URL.replace(/\/+$/, '');
       wsUrl = `${base}/ws/user/?${queryParams.toString()}`;
+    } else if (import.meta.env.VITE_BACKEND_URL) {
+      const base = import.meta.env.VITE_BACKEND_URL.replace(/^http/, 'ws').replace(/\/+$/, '');
+      wsUrl = `${base}/ws/user/?${queryParams.toString()}`;
     } else {
-      const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      wsUrl = `${proto}//${window.location.host}/ws/user/?${queryParams.toString()}`;
+      wsUrl = `wss://core.ishdaman.uz/ws/user/?${queryParams.toString()}`;
     }
 
     const ws = new WebSocket(wsUrl);
