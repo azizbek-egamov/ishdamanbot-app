@@ -405,79 +405,106 @@ export default function EarnPage({ onNavigateSpin }) {
 
             {/* Verification specific flow */}
             {selectedTask.verification_type === 'auto_api' && (
-              <div className="flex flex-col gap-3 bg-surface-container-low p-4 rounded-xl border border-white/5">
-                <p className="text-xs text-white">
-                  1. Quyidagi havola orqali kanalga obuna bo'ling.<br/>
-                  2. Qaytib kelib <b>"A'zolikni tekshirish"</b> tugmasini bosing.
-                </p>
-                {selectedTask.url && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      haptic.impact('medium');
-                      openLink(selectedTask.url);
-                    }}
-                    className="w-full py-2.5 px-3 rounded-xl bg-tertiary/15 hover:bg-tertiary/25 text-tertiary border border-tertiary/40 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="material-symbols-outlined text-[18px] shrink-0">send</span>
-                      <span className="truncate text-left text-white">{selectedTask.url}</span>
-                    </div>
-                    <span className="shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-tertiary text-on-tertiary font-bold shadow-neon-blue">
-                      Kanalga o'tish
-                    </span>
-                  </button>
-                )}
-              </div>
-            )}
-
-            {selectedTask.verification_type === 'timer' && (
-              <div className="flex flex-col gap-3 bg-surface-container-low p-4 rounded-xl border border-white/5 text-center">
-                <p className="text-xs text-on-surface-variant">
-                  Havolaga o'ting va taymer tugaguncha sahifada bo'ling.
-                </p>
-                {selectedTask.url && (
-                  <div className="text-[11px] font-mono text-tertiary truncate px-2 py-1 bg-surface-container-lowest rounded-lg border border-white/5">
-                    {selectedTask.url}
-                  </div>
-                )}
-                <div className="text-3xl font-mono font-bold text-tertiary my-1">
-                  {timerSeconds > 0 ? `${timerSeconds}s` : 'Tayyor!'}
-                </div>
-                {!isTimerRunning && timerSeconds > 0 && (
-                  <button
-                    type="button"
-                    onClick={handleStartTimerTask}
-                    className="py-2.5 rounded-xl bg-tertiary text-on-tertiary font-bold text-xs flex items-center justify-center gap-1.5 shadow-neon-blue active:scale-[0.98] transition-all"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">play_arrow</span>
-                    <span>Havolaga o'tish va Taymerni boshlash</span>
-                  </button>
-                )}
-              </div>
-            )}
-
-            {selectedTask.verification_type === 'manual_id' && (
               <div className="flex flex-col gap-3">
                 {selectedTask.url && (
-                  <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10 flex flex-col gap-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-on-surface-variant font-medium flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px] text-tertiary">open_in_new</span>
-                        1-qadam: Ro'yxatdan o'tish havolasi:
-                      </span>
-                    </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-on-surface-variant font-medium">
+                      1-qadam: Kanalga obuna bo'ling:
+                    </label>
                     <button
                       type="button"
                       onClick={() => {
                         haptic.impact('medium');
                         openLink(selectedTask.url);
                       }}
-                      className="w-full py-2.5 px-3 rounded-xl bg-tertiary/15 hover:bg-tertiary/25 text-tertiary border border-tertiary/40 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-tertiary border border-tertiary/30 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
                     >
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="material-symbols-outlined text-[18px] shrink-0">link</span>
-                        <span className="truncate text-left text-white">{selectedTask.url}</span>
+                        <span className="material-symbols-outlined text-[18px] shrink-0 text-tertiary">send</span>
+                        <span className="truncate text-left text-white font-medium">{selectedTask.url}</span>
+                      </div>
+                      <span className="shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-tertiary text-on-tertiary font-bold shadow-neon-blue">
+                        Kanalga o'tish
+                      </span>
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-on-surface-variant font-medium">
+                    {selectedTask.url ? "2-qadam: A'zolikni tasdiqlang:" : "A'zolikni tasdiqlang:"}
+                  </label>
+                  <p className="text-xs text-on-surface-variant bg-surface-container-low p-3.5 rounded-xl border border-white/5 leading-relaxed">
+                    Kanalga a'zo bo'lgach, pastdagi <b>"A'zolikni tekshirish"</b> tugmasini bosing.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {selectedTask.verification_type === 'timer' && (
+              <div className="flex flex-col gap-3">
+                {selectedTask.url && (
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-on-surface-variant font-medium">
+                      1-qadam: Vazifa sahifasiga o'ting:
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleStartTimerTask}
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-tertiary border border-tertiary/30 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="material-symbols-outlined text-[18px] shrink-0 text-tertiary">open_in_new</span>
+                        <span className="truncate text-left text-white font-medium">{selectedTask.url}</span>
+                      </div>
+                      <span className="shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-tertiary text-on-tertiary font-bold shadow-neon-blue">
+                        Havolaga o'tish
+                      </span>
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-on-surface-variant font-medium">
+                    {selectedTask.url ? "2-qadam: Taymer tugashini kuting:" : "Taymer tugashini kuting:"}
+                  </label>
+                  <div className="bg-surface-container-low p-4 rounded-xl border border-white/5 text-center flex flex-col items-center gap-1">
+                    <div className="text-3xl font-mono font-bold text-tertiary">
+                      {timerSeconds > 0 ? `${timerSeconds}s` : 'Tayyor!'}
+                    </div>
+                    {!isTimerRunning && timerSeconds > 0 && (
+                      <button
+                        type="button"
+                        onClick={handleStartTimerTask}
+                        className="mt-2 py-2 px-4 rounded-xl bg-tertiary text-on-tertiary font-bold text-xs flex items-center justify-center gap-1.5 shadow-neon-blue active:scale-[0.98] transition-all"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                        <span>Taymerni boshlash</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedTask.verification_type === 'manual_id' && (
+              <div className="flex flex-col gap-3">
+                {selectedTask.url && (
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-on-surface-variant font-medium">
+                      1-qadam: Vazifa havolasiga o'ting:
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        haptic.impact('medium');
+                        openLink(selectedTask.url);
+                      }}
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-tertiary border border-tertiary/30 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="material-symbols-outlined text-[18px] shrink-0 text-tertiary">link</span>
+                        <span className="truncate text-left text-white font-medium">{selectedTask.url}</span>
                       </div>
                       <span className="shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-tertiary text-on-tertiary font-bold shadow-neon-blue">
                         O'tish
@@ -488,7 +515,7 @@ export default function EarnPage({ onNavigateSpin }) {
 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs text-on-surface-variant font-medium">
-                    {selectedTask.url ? "2-qadam: Broker yoki Foydalanuvchi ID raqamingizni kiriting:" : "Broker yoki Foydalanuvchi ID:"}
+                    {selectedTask.url ? "2-qadam: Broker yoki Foydalanuvchi ID raqamingizni kiriting:" : "Broker yoki Foydalanuvchi ID raqamingizni kiriting:"}
                   </label>
                   <input
                     type="text"
@@ -504,34 +531,30 @@ export default function EarnPage({ onNavigateSpin }) {
             {selectedTask.verification_type === 'manual_screenshot' && (
               <div className="flex flex-col gap-3">
                 {selectedTask.url && (
-                  <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10 flex flex-col gap-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-on-surface-variant font-medium flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px] text-tertiary">open_in_new</span>
-                        1-qadam: Vazifa sahifasiga o'ting:
-                      </span>
-                      <span className="text-[10px] text-secondary font-mono">Majburiy</span>
-                    </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-on-surface-variant font-medium">
+                      1-qadam: Vazifa havolasiga o'ting:
+                    </label>
                     <button
                       type="button"
                       onClick={() => {
                         haptic.impact('medium');
                         openLink(selectedTask.url);
                       }}
-                      className="w-full py-2.5 px-3 rounded-xl bg-tertiary/15 hover:bg-tertiary/25 text-tertiary border border-tertiary/40 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high text-tertiary border border-tertiary/30 font-semibold text-xs flex items-center justify-between gap-2 active:scale-[0.98] transition-all"
                     >
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="material-symbols-outlined text-[18px] shrink-0">link</span>
+                        <span className="material-symbols-outlined text-[18px] shrink-0 text-tertiary">link</span>
                         <span className="truncate text-left text-white font-medium">{selectedTask.url}</span>
                       </div>
                       <span className="shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-tertiary text-on-tertiary font-bold shadow-neon-blue">
-                        Havolaga o'tish
+                        O'tish
                       </span>
                     </button>
                   </div>
                 )}
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1.5">
                   <label className="text-xs text-on-surface-variant font-medium">
                     {selectedTask.url ? "2-qadam: Tasdiqlovchi skrinshot yuklang:" : "Tasdiqlovchi skrinshot yuklang:"}
                   </label>
