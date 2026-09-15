@@ -31,7 +31,7 @@ export default function ReferPage() {
     fetchReferrals();
   }, []);
 
-  const botUsername = (data?.bot_username || import.meta.env.VITE_BOT_USERNAME || 'IshdamanUzBot').replace('@', '');
+  const botUsername = (data?.bot_username || import.meta.env.VITE_BOT_USERNAME || 'ishdamanbot').replace('@', '');
   const botAppShortName = data?.bot_app_short_name || import.meta.env.VITE_BOT_APP_SHORT_NAME || '';
   const refCode = user?.referral_code || '';
 

@@ -13,7 +13,7 @@ export default function LoginPage({ onAuth }) {
   const [error, setError] = useState(null);
   const [mounted, setMounted] = useState(false);
 
-  const botUsername = import.meta.env.VITE_BOT_USERNAME || "IshdamanUzBot";
+  const botUsername = (import.meta.env.VITE_BOT_USERNAME || "ishdamanbot").replace('@', '');
   const isDev = import.meta.env.DEV;
 
   const [hasRefCode, setHasRefCode] = useState(false);

@@ -146,7 +146,7 @@ export default function LandingPage({ onAuth }) {
   const [isWinModalOpen, setIsWinModalOpen] = useState(false);
   const [wonReward, setWonReward] = useState(null);
 
-  const botUsername = import.meta.env.VITE_BOT_USERNAME || 'IshdamanUzBot';
+  const botUsername = (import.meta.env.VITE_BOT_USERNAME || 'ishdamanbot').replace('@', '');
 
   // Stable callback for closing auth modal to avoid re-renders
   const handleOpenAuthModal = useCallback(() => {

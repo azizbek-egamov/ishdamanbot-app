@@ -18,7 +18,7 @@ export default function AuthModal({ isOpen, onClose, onAuth }) {
   onCloseRef.current = onClose;
   const widgetLoadedRef = useRef(false);
 
-  const botUsername = import.meta.env.VITE_BOT_USERNAME || 'IshdamanUzBot';
+  const botUsername = (import.meta.env.VITE_BOT_USERNAME || 'ishdamanbot').replace('@', '');
   const isDev = import.meta.env.DEV;
   const hasRefCode = Boolean(localStorage.getItem('pending_ref_code'));
 

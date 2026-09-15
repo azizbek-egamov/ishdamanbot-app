@@ -453,7 +453,7 @@ export function AuthProvider({ children }) {
 
             {/* Support Link */}
             <a
-              href="https://t.me/IshdamanUzBot"
+              href="https://t.me/ishdamanbot"
               target="_blank"
               rel="noreferrer"
               className="w-full py-3 rounded-xl bg-surface-container-high border border-white/10 hover:border-white/20 text-white font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 active:scale-95"
