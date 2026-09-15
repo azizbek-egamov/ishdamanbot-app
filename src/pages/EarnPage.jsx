@@ -3,6 +3,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useTelegram } from '../hooks/useTelegram';
 import { formatUZS } from '../utils/formatters';
+import getImageUrl from '../utils/imageUrl';
 import LiveOnlineTicker from '../components/LiveOnlineTicker';
 
 export default function EarnPage({ onNavigateSpin }) {
@@ -20,7 +21,9 @@ export default function EarnPage({ onNavigateSpin }) {
   const [proofText, setProofText] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [screenshotUrl, setScreenshotUrl] = useState('');
+  const [localPreview, setLocalPreview] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
 
   const categories = [
     { id: 'all', label: 'Barchasi' },
@@ -66,6 +69,7 @@ export default function EarnPage({ onNavigateSpin }) {
     setSelectedTask(task);
     setProofText('');
     setScreenshotUrl('');
+    setLocalPreview('');
     setIsTimerRunning(false);
     setTimerSeconds(task.timer_seconds || 15);
   };
@@ -81,6 +85,11 @@ export default function EarnPage({ onNavigateSpin }) {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Instant local preview for immediate responsive feedback
+    const tempUrl = URL.createObjectURL(file);
+    setLocalPreview(tempUrl);
+
     try {
       setUploadingImage(true);
       const formData = new FormData();
@@ -92,11 +101,13 @@ export default function EarnPage({ onNavigateSpin }) {
       showToast('Skrinshot yuklandi!', 'success');
       haptic.impact('light');
     } catch (err) {
+      setLocalPreview('');
       showToast('Rasmni yuklashda xatolik yuz berdi', 'error');
     } finally {
       setUploadingImage(false);
     }
   };
+
 
   const handleSubmitTask = async () => {
     if (!selectedTask) return;
@@ -524,15 +535,28 @@ export default function EarnPage({ onNavigateSpin }) {
                   <label className="text-xs text-on-surface-variant font-medium">
                     {selectedTask.url ? "2-qadam: Tasdiqlovchi skrinshot yuklang:" : "Tasdiqlovchi skrinshot yuklang:"}
                   </label>
-                  {screenshotUrl ? (
-                    <div className="relative rounded-xl overflow-hidden border border-secondary-container/40">
-                      <img src={screenshotUrl} alt="Proof preview" className="w-full h-36 object-cover" />
+                  {screenshotUrl || localPreview ? (
+                    <div className="relative rounded-xl overflow-hidden border border-secondary-container/40 bg-surface-container-lowest">
+                      <img
+                        src={localPreview || getImageUrl(screenshotUrl)}
+                        alt="Proof preview"
+                        className="w-full h-40 object-contain bg-black/60"
+                        onError={(e) => {
+                          if (localPreview && e.target.src !== localPreview) {
+                            e.target.src = localPreview;
+                          }
+                        }}
+                      />
                       <button
                         type="button"
-                        onClick={() => setScreenshotUrl('')}
-                        className="absolute top-2 right-2 px-2 py-1 rounded bg-black/70 text-white text-xs"
+                        onClick={() => {
+                          setScreenshotUrl('');
+                          setLocalPreview('');
+                        }}
+                        className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-black/80 hover:bg-black text-white text-xs font-semibold flex items-center gap-1 border border-white/20 active:scale-95 transition-all"
                       >
-                        O'chirish
+                        <span className="material-symbols-outlined text-[14px]">delete</span>
+                        <span>O'chirish</span>
                       </button>
                     </div>
                   ) : (
