@@ -1,0 +1,342 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #12131a;
+    color: #e2e1eb;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
+/* ============================================================
+   Custom scrollbar hiding
+   ============================================================ */
+::-webkit-scrollbar { display: none; }
+* { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ============================================================
+   Safe-area padding utilities used in pages
+   ============================================================ */
+/* pt-20 used in pages covers 80px for the fixed header (h-[60px]) */
+/* pb-safe adds space at the bottom for the floating BottomNav (h-[60px] + gap) */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
+}
+
+/* ============================================================
+   Glassmorphism Cards
+   ============================================================ */
+.glass-card {
+  background: rgba(30, 31, 38, 0.70);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   Neon Text Shadows
+   ============================================================ */
+.neon-glow-red   { text-shadow: 0 0 12px rgba(255,81,101,0.6); }
+.neon-glow-green { text-shadow: 0 0 12px rgba(1,229,153,0.6); }
+.neon-glow-blue  { text-shadow: 0 0 12px rgba(71,214,255,0.6); }
+
+/* ============================================================
+   Modern Micro-Animations & Keyframes
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.05); }
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 81, 101, 0.25), 0 0 30px rgba(255, 81, 101, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 81, 101, 0.45), 0 0 45px rgba(255, 81, 101, 0.2);
+  }
+}
+
+@keyframes greenPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(5, 213, 158, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(5, 213, 158, 0.5);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-modal-pop {
+  animation: modalPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.animate-float {
+  animation: floatSlow 3.5s ease-in-out infinite;
+}
+
+.neon-pulse-red {
+  animation: neonPulse 2.5s infinite ease-in-out;
+}
+
+.neon-pulse-green {
+  animation: greenPulse 2.5s infinite ease-in-out;
+}
+
+/* Card hover and touch tap feedback */
+.card-interactive {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 81, 101, 0.08);
+}
+.card-interactive:active {
+  transform: scale(0.985);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes tickerSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-1deg);
+  }
+}
+
+@keyframes beamSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes cyberScan {
+  0% { transform: translateY(-100%); opacity: 0.3; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(1000%); opacity: 0.1; }
+}
+
+.animate-gradient-flow {
+  background-size: 200% 200%;
+  animation: gradientFlow 4s ease infinite;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 22s linear infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 4.2s ease-in-out infinite;
+}
+
+.cyber-shimmer-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-shimmer-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  transform: translateX(-150%) skewX(-25deg);
+  transition: none;
+  pointer-events: none;
+}
+
+.cyber-shimmer-card:hover::after {
+  animation: beamSweep 0.85s ease-out;
+}
+
+/* Continuous Marquee for live ticker */
+@keyframes marqueeScroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 32s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Wheel Spin Animation */
+@keyframes wheelSpinSmooth {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(1800deg); }
+}
+
+.animate-wheel-spin {
+  animation: wheelSpinSmooth 4.5s cubic-bezier(0.12, 0.8, 0.22, 1) forwards;
+}
+
+/* Border Beam Pulse */
+@keyframes borderBeamPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 81, 101, 0.4), inset 0 0 15px rgba(255, 81, 101, 0.1);
+    border-color: rgba(255, 81, 101, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(1, 229, 153, 0.4), inset 0 0 15px rgba(1, 229, 153, 0.1);
+    border-color: rgba(1, 229, 153, 0.5);
+  }
+}
+
+.cyber-border-beam {
+  animation: borderBeamPulse 3.5s ease-in-out infinite;
+}
+
+/* Cyber Matrix Background Grid */
+.cyber-grid-bg {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Smooth Page Reveal on Load Completion */
+@keyframes pageReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.animate-page-reveal {
+  animation: pageReveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Section Target Glow Highlight on Animated Scroll Arrival */
+@keyframes sectionTargetGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 81, 101, 0);
+  }
+  25% {
+    box-shadow: 0 0 55px rgba(255, 81, 101, 0.35), 0 0 90px rgba(1, 229, 153, 0.18), inset 0 0 30px rgba(255, 81, 101, 0.08);
+  }
+  65% {
+    box-shadow: 0 0 30px rgba(1, 229, 153, 0.25), inset 0 0 15px rgba(1, 229, 153, 0.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 81, 101, 0);
+  }
+}
+
+.section-target-highlight {
+  animation: sectionTargetGlow 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  border-color: rgba(255, 81, 101, 0.5) !important;
+  transition: border-color 0.4s ease;
+}
