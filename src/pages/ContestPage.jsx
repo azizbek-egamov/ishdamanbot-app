@@ -286,62 +286,124 @@ export default function ContestPage({ onRefreshContestState }) {
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
-          {/* 1st Place */}
-          <div className="p-3 rounded-2xl bg-gradient-to-b from-amber-500/20 via-surface-container to-surface-container-low border border-amber-400/40 flex flex-col items-center text-center gap-1 shadow-lg shadow-amber-500/5">
-            <div className="w-9 h-9 rounded-xl bg-amber-400 text-black flex items-center justify-center font-bold text-sm shadow-md">
-              🥇
-            </div>
-            <span className="font-headline font-bold text-[11px] text-amber-300 uppercase tracking-tight mt-1">
-              1-O'rin
-            </span>
-            <span className="font-mono font-bold text-white text-xs">
-              {formatUZS(contest.first_prize)}
-            </span>
-            <span className="text-[9px] font-mono text-amber-400/80">UZS</span>
-          </div>
+        {contest.prizes_config && Array.isArray(contest.prizes_config) && contest.prizes_config.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+            {contest.prizes_config.map((pz, pIdx) => {
+              const rankMedals = ['🥇', '🥈', '🥉', '🎖️', '🎁'];
+              const medal = rankMedals[pIdx] || '🏆';
 
-          {/* 2nd Place */}
-          <div className="p-3 rounded-2xl bg-gradient-to-b from-slate-400/15 via-surface-container to-surface-container-low border border-slate-400/30 flex flex-col items-center text-center gap-1 shadow-md">
-            <div className="w-9 h-9 rounded-xl bg-slate-300 text-black flex items-center justify-center font-bold text-sm shadow-md">
-              🥈
-            </div>
-            <span className="font-headline font-bold text-[11px] text-slate-200 uppercase tracking-tight mt-1">
-              2-O'rin
-            </span>
-            <span className="font-mono font-bold text-white text-xs">
-              {formatUZS(contest.second_prize)}
-            </span>
-            <span className="text-[9px] font-mono text-slate-400">UZS</span>
-          </div>
+              const cardStyles = [
+                'from-amber-500/20 via-surface-container to-surface-container-low border-amber-400/40 shadow-amber-500/5',
+                'from-slate-400/15 via-surface-container to-surface-container-low border-slate-400/30',
+                'from-amber-800/20 via-surface-container to-surface-container-low border-amber-700/30',
+                'from-teal-500/15 via-surface-container to-surface-container-low border-teal-500/30',
+                'from-purple-500/15 via-surface-container to-surface-container-low border-purple-500/30',
+              ];
+              const style = cardStyles[pIdx % cardStyles.length];
 
-          {/* 3rd Place */}
-          <div className="p-3 rounded-2xl bg-gradient-to-b from-amber-800/20 via-surface-container to-surface-container-low border border-amber-700/30 flex flex-col items-center text-center gap-1 shadow-md">
-            <div className="w-9 h-9 rounded-xl bg-amber-700 text-white flex items-center justify-center font-bold text-sm shadow-md">
-              🥉
-            </div>
-            <span className="font-headline font-bold text-[11px] text-amber-500 uppercase tracking-tight mt-1">
-              3-O'rin
-            </span>
-            <span className="font-mono font-bold text-white text-xs">
-              {formatUZS(contest.third_prize)}
-            </span>
-            <span className="text-[9px] font-mono text-amber-600">UZS</span>
-          </div>
-        </div>
+              const badgeBgs = [
+                'bg-amber-400 text-black',
+                'bg-slate-300 text-black',
+                'bg-amber-700 text-white',
+                'bg-teal-400 text-black',
+                'bg-purple-400 text-black',
+              ];
+              const badgeBg = badgeBgs[pIdx % badgeBgs.length];
 
-        {/* 4th Place if configured */}
-        {Number(contest.fourth_prize) > 0 && (
-          <div className="p-3 rounded-xl bg-surface-container border border-teal-500/20 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-xs font-bold">
-                🎖️
+              return (
+                <div
+                  key={pIdx}
+                  className={`p-3.5 rounded-2xl bg-gradient-to-b ${style} border flex flex-col items-center text-center gap-1.5 shadow-md relative overflow-hidden`}
+                >
+                  <div className={`w-9 h-9 rounded-xl ${badgeBg} flex items-center justify-center font-bold text-sm shadow-md`}>
+                    {medal}
+                  </div>
+
+                  <span className="font-headline font-bold text-[11px] text-white uppercase tracking-tight">
+                    {pz.title || `${pz.rank || pIdx + 1}-O'rin`}
+                  </span>
+
+                  {pz.is_cash !== false ? (
+                    <div className="flex flex-col items-center">
+                      <span className="font-mono font-bold text-amber-300 text-sm neon-glow-green">
+                        {formatUZS(pz.cash_amount || pz.estimated_value || 0)} UZS
+                      </span>
+                      <span className="text-[9px] font-mono text-on-surface-variant">Naqd pul mukofoti</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-0.5">
+                      <span className="font-headline font-bold text-amber-300 text-sm text-center line-clamp-2">
+                        {pz.item_name || "Moddiy Sovg'a"}
+                      </span>
+                      {Number(pz.estimated_value) > 0 && (
+                        <span className="text-[9px] font-mono text-on-surface-variant">
+                          Qiymati: ~{formatUZS(pz.estimated_value)} UZS
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-2">
+            {/* 1st Place */}
+            <div className="p-3 rounded-2xl bg-gradient-to-b from-amber-500/20 via-surface-container to-surface-container-low border border-amber-400/40 flex flex-col items-center text-center gap-1 shadow-lg shadow-amber-500/5">
+              <div className="w-9 h-9 rounded-xl bg-amber-400 text-black flex items-center justify-center font-bold text-sm shadow-md">
+                🥇
+              </div>
+              <span className="font-headline font-bold text-[11px] text-amber-300 uppercase tracking-tight mt-1">
+                1-O'rin
               </span>
-              <span className="text-xs font-headline font-semibold text-white">4-O'rin Sovrini:</span>
+              <span className="font-mono font-bold text-white text-xs">
+                {formatUZS(contest.first_prize)}
+              </span>
+              <span className="text-[9px] font-mono text-amber-400/80">UZS</span>
             </div>
-            <span className="font-mono font-bold text-teal-400 text-xs">
-              {formatUZS(contest.fourth_prize)} UZS
-            </span>
+
+            {/* 2nd Place */}
+            <div className="p-3 rounded-2xl bg-gradient-to-b from-slate-400/15 via-surface-container to-surface-container-low border border-slate-400/30 flex flex-col items-center text-center gap-1 shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-slate-300 text-black flex items-center justify-center font-bold text-sm shadow-md">
+                🥈
+              </div>
+              <span className="font-headline font-bold text-[11px] text-slate-200 uppercase tracking-tight mt-1">
+                2-O'rin
+              </span>
+              <span className="font-mono font-bold text-white text-xs">
+                {formatUZS(contest.second_prize)}
+              </span>
+              <span className="text-[9px] font-mono text-slate-400">UZS</span>
+            </div>
+
+            {/* 3rd Place */}
+            <div className="p-3 rounded-2xl bg-gradient-to-b from-amber-800/20 via-surface-container to-surface-container-low border border-amber-700/30 flex flex-col items-center text-center gap-1 shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-amber-700 text-white flex items-center justify-center font-bold text-sm shadow-md">
+                🥉
+              </div>
+              <span className="font-headline font-bold text-[11px] text-amber-500 uppercase tracking-tight mt-1">
+                3-O'rin
+              </span>
+              <span className="font-mono font-bold text-white text-xs">
+                {formatUZS(contest.third_prize)}
+              </span>
+              <span className="text-[9px] font-mono text-amber-600">UZS</span>
+            </div>
+
+            {/* 4th Place if configured */}
+            {Number(contest.fourth_prize) > 0 && (
+              <div className="col-span-3 p-3 rounded-xl bg-surface-container border border-teal-500/20 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-xs font-bold">
+                    🎖️
+                  </span>
+                  <span className="text-xs font-headline font-semibold text-white">4-O'rin Sovrini:</span>
+                </div>
+                <span className="font-mono font-bold text-teal-400 text-xs">
+                  {formatUZS(contest.fourth_prize)} UZS
+                </span>
+              </div>
+            )}
           </div>
         )}
       </section>
@@ -364,35 +426,44 @@ export default function ContestPage({ onRefreshContestState }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            {winners.map((w) => (
-              <div
-                key={w.id || w.prize_rank}
-                className="p-2.5 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="w-6 h-6 rounded-lg bg-amber-400 text-black font-bold text-xs flex items-center justify-center shrink-0">
-                    {w.prize_rank}
-                  </span>
-                  <img
-                    src={w.avatar_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100'}
-                    alt={w.full_name}
-                    className="w-8 h-8 rounded-full object-cover border border-amber-400/40 shrink-0"
-                  />
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-headline font-bold text-white text-xs truncate">
-                      {w.full_name}
+            {winners.map((w) => {
+              const isGift = w.is_cash === false || (w.prize_title && Number(w.prize_amount) === 0);
+              return (
+                <div
+                  key={w.id || w.prize_rank}
+                  className="p-2.5 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-6 h-6 rounded-lg bg-amber-400 text-black font-bold text-xs flex items-center justify-center shrink-0">
+                      {w.prize_rank}
                     </span>
-                    <span className="text-[10px] font-mono text-amber-400">
-                      {w.ticket_number ? `${w.ticket_number} • ` : ''}@{w.username || 'user'}
-                    </span>
+                    <img
+                      src={w.avatar_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100'}
+                      alt={w.full_name}
+                      className="w-8 h-8 rounded-full object-cover border border-amber-400/40 shrink-0"
+                    />
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-headline font-bold text-white text-xs truncate">
+                        {w.full_name}
+                      </span>
+                      <span className="text-[10px] font-mono text-amber-400">
+                        {w.ticket_number ? `${w.ticket_number} • ` : ''}@{w.username || 'user'}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <span className="font-mono font-bold text-xs text-secondary shrink-0">
-                  +{formatUZS(w.prize_amount)} UZS
-                </span>
-              </div>
-            ))}
+                  {isGift ? (
+                    <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 font-bold text-xs shrink-0 max-w-[150px] truncate" title={w.prize_title}>
+                      🎁 {w.prize_title || "Sovg'a"}
+                    </span>
+                  ) : (
+                    <span className="font-mono font-bold text-xs text-secondary shrink-0">
+                      +{formatUZS(w.prize_amount)} UZS
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
