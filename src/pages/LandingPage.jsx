@@ -123,6 +123,19 @@ export default function LandingPage({ onAuth }) {
   const [tasks, setTasks] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [contestData, setContestData] = useState(null);
+  const defaultTopTraders = [
+    { rank: 1, name: 'Sanjarbek T.', username: 'sanjar_fx', earnings: 2450000, completed: 184, isTop: true },
+    { rank: 2, name: 'Dalerjon M.', username: 'daler_invest', earnings: 1890000, completed: 142, isTop: true },
+    { rank: 3, name: 'Bobur Mirzo', username: 'bobur_trader', earnings: 1420000, completed: 119, isTop: true },
+    { rank: 4, name: 'Shahzod A.', username: 'shahzod_uz', earnings: 980000, completed: 86 },
+    { rank: 5, name: 'Malika Karimova', username: 'malika_k', earnings: 850000, completed: 74 },
+    { rank: 6, name: 'Javohir R.', username: 'javohir_77', earnings: 720000, completed: 63 },
+    { rank: 7, name: 'Ulug’bek N.', username: 'ulugbek_pro', earnings: 640000, completed: 58 },
+    { rank: 8, name: 'Madina Saidova', username: 'madina_s', earnings: 510000, completed: 47 },
+    { rank: 9, name: 'Farrux D.', username: 'farrux_d', earnings: 450000, completed: 41 },
+    { rank: 10, name: 'Otabek H.', username: 'otabek_h', earnings: 390000, completed: 35 },
+  ];
+  const [topTraders, setTopTraders] = useState(defaultTopTraders);
 
   // High-tech Cyber Initial Splash Loading Screen with Silky Reveal
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -421,6 +434,15 @@ export default function LandingPage({ onAuth }) {
       } catch (e) {
         // ok
       }
+
+      try {
+        const lbRes = await api.get('/users/public/leaderboard/');
+        if (Array.isArray(lbRes.data) && lbRes.data.length > 0) {
+          setTopTraders(lbRes.data);
+        }
+      } catch (e) {
+        // ok
+      }
     };
 
     loadData();
@@ -639,28 +661,7 @@ export default function LandingPage({ onAuth }) {
     return t.category?.toLowerCase() === selectedCategory.toLowerCase();
   });
 
-  // Top 10 leaderboard
-  const topTraders = [
-    { rank: 1, name: 'Sanjarbek T.', username: 'sanjar_fx', earnings: 2450000, completed: 184, isTop: true },
-    { rank: 2, name: 'Dalerjon M.', username: 'daler_invest', earnings: 1890000, completed: 142, isTop: true },
-    { rank: 3, name: 'Bobur Mirzo', username: 'bobur_trader', earnings: 1420000, completed: 119, isTop: true },
-    { rank: 4, name: 'Shahzod A.', username: 'shahzod_uz', earnings: 980000, completed: 86 },
-    { rank: 5, name: 'Malika Karimova', username: 'malika_k', earnings: 850000, completed: 74 },
-    { rank: 6, name: 'Javohir R.', username: 'javohir_77', earnings: 720000, completed: 63 },
-    { rank: 7, name: 'Ulug’bek N.', username: 'ulugbek_pro', earnings: 640000, completed: 58 },
-    { rank: 8, name: 'Madina Saidova', username: 'madina_s', earnings: 510000, completed: 47 },
-    { rank: 9, name: 'Farrux D.', username: 'farrux_d', earnings: 450000, completed: 41 },
-    { rank: 10, name: 'Otabek H.', username: 'otabek_h', earnings: 390000, completed: 35 },
-  ];
 
-  const partners = [
-    { name: 'Binance', icon: 'currency_exchange', tag: 'Kripto №1' },
-    { name: 'Bybit', icon: 'candlestick_chart', tag: 'VIP Hamkor' },
-    { name: 'OKX', icon: 'account_balance', tag: 'Web3 & DEX' },
-    { name: 'BingX', icon: 'trending_up', tag: 'Copy Trading' },
-    { name: 'TradingView', icon: 'analytics', tag: 'Grafiklar' },
-    { name: 'Exness', icon: 'show_chart', tag: 'Forex Broker' },
-  ];
 
   return (
     <div className="min-h-screen bg-[#090a0f] text-white selection:bg-[#ff5165] selection:text-white font-sans antialiased overflow-x-hidden relative cyber-grid-bg">
@@ -1543,31 +1544,7 @@ export default function LandingPage({ onAuth }) {
           </div>
         </section>
 
-        {/* =========================================================
-            10. HAMKORLAR / PARTNERS
-            ========================================================= */}
-        <section id="hamkorlar" className="py-12 sm:py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <span className="text-xs font-mono uppercase tracking-widest text-on-surface-variant block mb-6">
-              Rasmiy Hamkorlar va Birjalar
-            </span>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-              {partners.map((p, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 rounded-2xl bg-surface-container/60 border border-white/[0.06] hover:border-white/20 transition-all flex flex-col items-center justify-center gap-2 group cyber-shimmer-card"
-                >
-                  <span className="material-symbols-outlined text-on-surface-variant group-hover:text-white transition-colors text-[28px]">
-                    {p.icon}
-                  </span>
-                  <span className="text-sm font-bold text-white">{p.name}</span>
-                  <span className="text-[10px] font-mono text-secondary">{p.tag}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* =========================================================
             11. QANDAY ISHLAYDI? (3 OSON QADAM)
