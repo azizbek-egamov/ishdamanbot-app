@@ -297,6 +297,11 @@ export function AuthProvider({ children }) {
           showToast("Akkauntingiz bloklandi!", "error");
         }
 
+        // Real-time Live Activity stream event
+        if (data.event === 'LIVE_ACTIVITY_NEW' && data.item) {
+          window.dispatchEvent(new CustomEvent('ishdaman_live_activity', { detail: data.item }));
+        }
+
         // Real-time Online Presence stats
         if (data.event === 'ONLINE_STATS_UPDATE' || data.online_count !== undefined) {
           if (data.online_count !== undefined) {

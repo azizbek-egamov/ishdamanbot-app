@@ -86,6 +86,25 @@ export default function EarnPage({ onNavigateSpin }) {
     return () => clearInterval(interval);
   }, []);
 
+  // ⚡ Real-Time WebSocket Listener for Live Activity stream
+  useEffect(() => {
+    const handleLiveActivityEvent = (e) => {
+      const newItem = e.detail;
+      if (!newItem) return;
+      setLiveActivity((prev) => {
+        const oldFeed = prev?.live_feed || [];
+        const filtered = oldFeed.filter((item) => item.id !== newItem.id);
+        return {
+          ...prev,
+          live_feed: [newItem, ...filtered].slice(0, 15),
+        };
+      });
+    };
+
+    window.addEventListener('ishdaman_live_activity', handleLiveActivityEvent);
+    return () => window.removeEventListener('ishdaman_live_activity', handleLiveActivityEvent);
+  }, []);
+
   // Timer countdown effect
   useEffect(() => {
     let interval = null;
@@ -216,7 +235,7 @@ export default function EarnPage({ onNavigateSpin }) {
       {/* Main Grid: Left side Tasks (8 cols on lg), Right side Widgets (4 cols on lg) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left / Main Content: Categories & Tasks */}
-        <div className="lg:col-span-8 flex flex-col gap-6 order-2 lg:order-1">
+        <div className="lg:col-span-8 flex flex-col gap-6 order-1 lg:order-1">
           {/* Filter Pills Carousel */}
           <section className="flex flex-col gap-2">
             <div className="flex items-center justify-between px-1">
@@ -342,8 +361,8 @@ export default function EarnPage({ onNavigateSpin }) {
           </section>
         </div>
 
-        {/* Right Sidebar on Desktop / Highlight on Mobile */}
-        <div className="lg:col-span-4 flex flex-col gap-4 order-1 lg:order-2">
+        {/* Right Sidebar on Desktop / Positioned below tasks on Mobile */}
+        <div className="lg:col-span-4 flex flex-col gap-4 order-2 lg:order-2">
           {/* Daily Bonus Card */}
           <section
             onClick={() => {
