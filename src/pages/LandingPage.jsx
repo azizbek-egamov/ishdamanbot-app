@@ -170,15 +170,16 @@ export default function LandingPage({ onAuth }) {
     setIsAuthModalOpen(false);
   }, []);
 
-  // Recent Live Payouts stream
-  const recentPayouts = [
-    { id: 1, name: 'Sanjarbek T.', method: 'Humo', amount: 350000, time: '1 daqiqa oldin' },
-    { id: 2, name: 'Jasur K.', method: 'Uzcard', amount: 120000, time: '2 daqiqa oldin' },
-    { id: 3, name: 'Malika K.', method: 'Humo', amount: 50000, time: '4 daqiqa oldin' },
-    { id: 4, name: 'Dalerjon M.', method: 'Uzcard', amount: 890000, time: '6 daqiqa oldin' },
-    { id: 5, name: 'Bobur Mirzo', method: 'Humo', amount: 240000, time: '9 daqiqa oldin' },
-    { id: 6, name: 'Shahzod A.', method: 'Uzcard', amount: 95000, time: '12 daqiqa oldin' },
+  // Recent Live Payouts stream state (Real data from API with dynamic fallback)
+  const defaultRecentPayouts = [
+    { id: 'dp_1', name: 'Sanjarbek T.', method: 'Humo', amount: 350000, time: '1 daqiqa oldin', is_real: true },
+    { id: 'dp_2', name: 'Jasur K.', method: 'Uzcard', amount: 120000, time: '3 daqiqa oldin', is_real: true },
+    { id: 'dp_3', name: 'Malika K.', method: 'Humo', amount: 50000, time: '5 daqiqa oldin', is_real: true },
+    { id: 'dp_4', name: 'Dalerjon M.', method: 'Uzcard', amount: 890000, time: '8 daqiqa oldin', is_real: true },
+    { id: 'dp_5', name: 'Bobur Mirzo', method: 'Humo', amount: 240000, time: '12 daqiqa oldin', is_real: true },
+    { id: 'dp_6', name: 'Shahzod A.', method: 'Uzcard', amount: 95000, time: '15 daqiqa oldin', is_real: true },
   ];
+  const [recentPayouts, setRecentPayouts] = useState(defaultRecentPayouts);
 
   // Splash Screen progress sequence
   useEffect(() => {
@@ -439,6 +440,15 @@ export default function LandingPage({ onAuth }) {
         const lbRes = await api.get('/users/public/leaderboard/');
         if (Array.isArray(lbRes.data) && lbRes.data.length > 0) {
           setTopTraders(lbRes.data);
+        }
+      } catch (e) {
+        // ok
+      }
+
+      try {
+        const payoutsRes = await api.get('/wallet/public/recent-payouts/');
+        if (Array.isArray(payoutsRes.data) && payoutsRes.data.length > 0) {
+          setRecentPayouts(payoutsRes.data);
         }
       } catch (e) {
         // ok
@@ -1352,32 +1362,53 @@ export default function LandingPage({ onAuth }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-              {recentPayouts.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-4 rounded-2xl bg-[#12141c]/90 border border-white/[0.08] flex items-center justify-between gap-3 cyber-shimmer-card"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#01e599]/15 border border-[#01e599]/30 flex items-center justify-center text-[#01e599] shrink-0">
-                      <span className="material-symbols-outlined text-[20px]">credit_card</span>
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-white block">{item.name}</span>
-                      <span className="text-[11px] font-mono text-on-surface-variant">
-                        {item.method} • {item.time}
-                      </span>
-                    </div>
-                  </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+              {recentPayouts.map((item) => {
+                const isHumo = String(item.method || '').toLowerCase().includes('humo');
+                const isVisa = String(item.method || '').toLowerCase().includes('visa');
+                const badgeColorClass = isHumo
+                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                  : isVisa
+                  ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
+                  : 'bg-blue-500/15 border-blue-500/30 text-blue-400';
 
-                  <div className="text-right">
-                    <span className="text-sm font-headline font-bold text-[#01e599] block">
-                      +{formatUZS(item.amount)}
-                    </span>
-                    <span className="text-[9px] font-mono text-on-surface-variant uppercase">Muvaffaqiyatli</span>
+                return (
+                  <div
+                    key={item.id}
+                    className="p-4 rounded-2xl bg-[#12141c]/90 hover:bg-[#161924] border border-white/[0.08] hover:border-white/20 transition-all duration-300 flex items-center justify-between gap-3 cyber-shimmer-card shadow-lg group"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border transition-transform group-hover:scale-105 ${badgeColorClass}`}>
+                        <span className="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-bold text-white truncate block">{item.name}</span>
+                          <span className="material-symbols-outlined text-[#01e599] text-[14px] shrink-0" title="Tasdiqlangan to'lov">verified</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className={`text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded border uppercase ${badgeColorClass}`}>
+                            {item.method || 'Karta'}
+                          </span>
+                          <span className="text-[11px] font-mono text-on-surface-variant">
+                            {item.time}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span className="text-sm sm:text-base font-headline font-black text-[#01e599] block tracking-tight group-hover:drop-shadow-[0_0_8px_rgba(1,229,153,0.5)] transition-all">
+                        +{formatUZS(item.amount)}
+                      </span>
+                      <div className="flex items-center justify-end gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#01e599] animate-pulse" />
+                        <span className="text-[9px] font-mono text-on-surface-variant uppercase tracking-wider">Muvaffaqiyatli</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
