@@ -24,6 +24,25 @@ export default function EarnPage({ onNavigateSpin }) {
   const [localPreview, setLocalPreview] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  // Live Activity & Daily Leaderboard Sidebar state
+  const defaultLiveActivity = {
+    today_top: [
+      {'rank': 1, 'name': 'Sanjarbek T.', 'username': '@sa***x', 'earned_today': 485000, 'tasks_count': 18, 'is_top': true},
+      {'rank': 2, 'name': 'Jasur K.', 'username': '@ja***9', 'earned_today': 340000, 'tasks_count': 14, 'is_top': true},
+      {'rank': 3, 'name': 'Malika K.', 'username': '@ma***a', 'earned_today': 295000, 'tasks_count': 11, 'is_top': true},
+      {'rank': 4, 'name': 'Dalerjon M.', 'username': '@da***t', 'earned_today': 210000, 'tasks_count': 9, 'is_top': false},
+      {'rank': 5, 'name': 'Bobur M.', 'username': '@bo***r', 'earned_today': 175000, 'tasks_count': 8, 'is_top': false},
+    ],
+    live_feed: [
+      {'id': 'f_1', 'type': 'task', 'name': 'Sanjarbek T.', 'username': '@sa***x', 'task_title': "Rasmiy telegram kanalimizga obuna bo'ling", 'reward': 500, 'category': 'telegram', 'time': '1 daq oldin'},
+      {'id': 'f_2', 'type': 'payout', 'name': 'Jasur K.', 'username': '@ja***9', 'amount': 120000, 'method': 'Uzcard', 'time': '2 daq oldin'},
+      {'id': 'f_3', 'type': 'task', 'name': 'Malika K.', 'username': '@ma***a', 'task_title': "Instagram sahifamizga obuna bo'lish", 'reward': 750, 'category': 'instagram', 'time': '4 daq oldin'},
+      {'id': 'f_4', 'type': 'payout', 'name': 'Dalerjon M.', 'username': '@da***t', 'amount': 890000, 'method': 'Uzcard', 'time': '6 daq oldin'},
+      {'id': 'f_5', 'type': 'task', 'name': 'Bobur M.', 'username': '@bo***r', 'task_title': "PROPTRADING.UZ dan PROP hisob sotib oling", 'reward': 100000, 'category': 'broker', 'time': '8 daq oldin'},
+    ]
+  };
+  const [liveActivity, setLiveActivity] = useState(defaultLiveActivity);
+  const [sidebarTab, setSidebarTab] = useState('feed'); // 'feed' | 'top'
 
   const categories = [
     { id: 'all', label: 'Barchasi' },
@@ -46,9 +65,26 @@ export default function EarnPage({ onNavigateSpin }) {
     }
   };
 
+  const fetchLiveActivity = async () => {
+    try {
+      const res = await api.get('/users/public/live-activity/');
+      if (res.data && (res.data.today_top || res.data.live_feed)) {
+        setLiveActivity(res.data);
+      }
+    } catch (e) {
+      // Keep existing data
+    }
+  };
+
   useEffect(() => {
     fetchTasks(activeCategory);
   }, [activeCategory]);
+
+  useEffect(() => {
+    fetchLiveActivity();
+    const interval = setInterval(fetchLiveActivity, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Timer countdown effect
   useEffect(() => {
@@ -270,6 +306,10 @@ export default function EarnPage({ onNavigateSpin }) {
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant uppercase truncate">
                             {task.category}
                           </span>
+                          <div className="hidden xs:flex items-center gap-1 text-[10px] font-mono text-on-surface-variant shrink-0">
+                            <span className="material-symbols-outlined text-[13px] text-[#01e599]">group</span>
+                            <span>{task.completed_count || 42}</span>
+                          </div>
                         </div>
 
                         <div>
@@ -302,7 +342,7 @@ export default function EarnPage({ onNavigateSpin }) {
           </section>
         </div>
 
-        {/* Right Sidebar on Desktop (or Highlight Banner on Mobile) */}
+        {/* Right Sidebar on Desktop / Highlight on Mobile */}
         <div className="lg:col-span-4 flex flex-col gap-4 order-1 lg:order-2">
           {/* Daily Bonus Card */}
           <section
@@ -332,18 +372,200 @@ export default function EarnPage({ onNavigateSpin }) {
             </div>
           </section>
 
-          {/* Desktop-only: Trading Tip & Security Assurance */}
-          <div className="hidden lg:flex flex-col gap-4 p-5 rounded-2xl bg-surface-container/50 border border-white/5">
-            <div className="flex items-center gap-2 text-xs font-mono text-secondary uppercase font-semibold">
-              <span className="material-symbols-outlined text-[18px]">verified_user</span>
-              <span>Xavfsiz va Kafolatlangan</span>
+          {/* ⚡ JONLI FAOLLIK VA BUGUNGI TOP LEADERBOARD WIDGET */}
+          <div className="flex flex-col rounded-2xl bg-[#11131c]/90 border border-white/10 shadow-xl overflow-hidden">
+            {/* Header with Switcher Tabs */}
+            <div className="p-3.5 border-b border-white/10 flex items-center justify-between gap-2 bg-surface-container/40">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#01e599] animate-ping" />
+                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                  Faollik
+                </span>
+              </div>
+
+              {/* Tab Selector Buttons */}
+              <div className="flex items-center gap-1 p-0.5 rounded-lg bg-black/40 border border-white/10 text-[11px] font-mono">
+                <button
+                  type="button"
+                  onClick={() => setSidebarTab('feed')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    sidebarTab === 'feed'
+                      ? 'bg-primary-container text-white font-bold shadow-neon-red'
+                      : 'text-on-surface-variant hover:text-white'
+                  }`}
+                >
+                  ⚡ Jonli Oqim
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSidebarTab('top')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    sidebarTab === 'top'
+                      ? 'bg-secondary-container text-on-secondary font-bold shadow-[0_0_10px_rgba(1,229,153,0.3)]'
+                      : 'text-on-surface-variant hover:text-white'
+                  }`}
+                >
+                  🏆 Bugungi Top
+                </button>
+              </div>
             </div>
-            <p className="text-xs text-on-surface-variant leading-relaxed">
-              Barcha topshiriqlar avtomatik tekshiruvdan o'tkaziladi. Balansingizdagi mablag'ni Humo va Uzcard kartalariga bir zumda yechib olishingiz mumkin.
-            </p>
-            <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-on-surface-variant">
-              <span>Minimal yechish:</span>
-              <span className="text-white font-bold">10,000 UZS</span>
+
+            {/* Content Container */}
+            <div className="p-3 max-h-[420px] overflow-y-auto space-y-2 divide-y divide-white/5">
+              {sidebarTab === 'feed' ? (
+                // 1. LIVE ACTIVITY FEED TAB
+                (liveActivity.live_feed || []).slice(0, 7).map((item, idx) => {
+                  const isPayout = item.type === 'payout';
+                  const isSpin = item.type === 'spin';
+
+                  return (
+                    <div
+                      key={item.id || idx}
+                      className="pt-2 first:pt-0 flex items-center justify-between gap-2.5 transition-colors hover:bg-white/[0.02] p-1.5 rounded-xl"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {/* User Avatar with fallback */}
+                        {item.avatar_url ? (
+                          <img
+                            src={getImageUrl(item.avatar_url)}
+                            alt=""
+                            className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/15"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-600/60 to-pink-600/60 border border-white/15 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                            {(item.name || 'U').charAt(0)}
+                          </div>
+                        )}
+
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-white truncate max-w-[120px] block">
+                              {item.name}
+                            </span>
+                            <span className="text-[10px] font-mono text-on-surface-variant truncate max-w-[70px]">
+                              {item.username}
+                            </span>
+                          </div>
+
+                          <div className="text-[11px] text-on-surface-variant truncate max-w-[170px] mt-0.5 flex items-center gap-1">
+                            {isPayout ? (
+                              <span className="text-amber-400 font-medium truncate">
+                                Pul yechdi ({item.method || 'Karta'})
+                              </span>
+                            ) : isSpin ? (
+                              <span className="text-cyan-400 font-medium truncate">
+                                Ruletka aylantirdi
+                              </span>
+                            ) : (
+                              <span className="text-white/80 truncate">
+                                {item.task_title || "Vazifa bajardi"}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right Amount & Time */}
+                      <div className="text-right shrink-0">
+                        {isPayout ? (
+                          <span className="text-xs font-mono font-bold text-amber-400 block">
+                            -{formatUZS(item.amount)}
+                          </span>
+                        ) : (
+                          <span className="text-xs font-mono font-bold text-[#01e599] block">
+                            +{formatUZS(item.reward || item.amount)}
+                          </span>
+                        )}
+                        <span className="text-[9px] font-mono text-on-surface-variant block">
+                          {item.time}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                // 2. TODAY TOP EARNERS TAB
+                (liveActivity.today_top || []).map((trader) => {
+                  const isFirst = trader.rank === 1;
+                  const isSecond = trader.rank === 2;
+                  const isThird = trader.rank === 3;
+
+                  return (
+                    <div
+                      key={trader.rank}
+                      className={`pt-2 first:pt-0 flex items-center justify-between gap-2.5 p-1.5 rounded-xl transition-colors ${
+                        isFirst
+                          ? 'bg-amber-500/10 border border-amber-500/20'
+                          : isSecond
+                          ? 'bg-slate-300/5 border border-slate-300/15'
+                          : isThird
+                          ? 'bg-amber-700/5 border border-amber-700/15'
+                          : 'hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {/* Rank Badge */}
+                        <div
+                          className={`w-6 h-6 rounded-md flex items-center justify-center font-mono font-black text-xs shrink-0 ${
+                            isFirst
+                              ? 'bg-amber-400 text-black shadow-[0_0_8px_rgba(251,191,36,0.6)]'
+                              : isSecond
+                              ? 'bg-slate-300 text-black'
+                              : isThird
+                              ? 'bg-amber-700 text-white'
+                              : 'bg-surface-container text-on-surface-variant'
+                          }`}
+                        >
+                          {trader.rank}
+                        </div>
+
+                        {/* Avatar */}
+                        {trader.avatar_url ? (
+                          <img
+                            src={getImageUrl(trader.avatar_url)}
+                            alt=""
+                            className="w-8 h-8 rounded-full object-cover shrink-0 border border-white/15"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-surface-container-high border border-white/10 flex items-center justify-center text-[11px] font-bold text-white shrink-0">
+                            {(trader.name || 'U').charAt(0)}
+                          </div>
+                        )}
+
+                        <div className="min-w-0">
+                          <span className="text-xs font-bold text-white truncate max-w-[120px] block">
+                            {trader.name}
+                          </span>
+                          <span className="text-[10px] font-mono text-on-surface-variant truncate block">
+                            {trader.username} • {trader.tasks_count} ta vazifa
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Earnings */}
+                      <div className="text-right shrink-0">
+                        <span className="text-xs font-mono font-bold text-[#01e599] block">
+                          +{formatUZS(trader.earned_today)} UZS
+                        </span>
+                        <span className="text-[9px] font-mono text-on-surface-variant block uppercase">
+                          Bugun
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Bottom Security / Auto-payout badge */}
+            <div className="p-2.5 bg-black/40 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-on-surface-variant">
+              <span className="flex items-center gap-1 text-[#01e599]">
+                <span className="material-symbols-outlined text-[14px]">bolt</span>
+                <span>Avto-to'lov 24/7</span>
+              </span>
+              <span>Min. yechish: 10,000 UZS</span>
             </div>
           </div>
         </div>
