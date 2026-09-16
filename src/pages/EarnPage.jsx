@@ -393,38 +393,49 @@ export default function EarnPage({ onNavigateSpin }) {
 
           {/* ⚡ JONLI FAOLLIK VA BUGUNGI TOP LEADERBOARD WIDGET */}
           <div className="flex flex-col rounded-2xl bg-[#11131c]/90 border border-white/10 shadow-xl overflow-hidden">
-            {/* Header with Switcher Tabs */}
-            <div className="p-3.5 border-b border-white/10 flex items-center justify-between gap-2 bg-surface-container/40">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#01e599] animate-ping" />
-                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                  Faollik
+            {/* Header with Title on top & Full-width Segmented Tabs in separate row */}
+            <div className="p-3.5 border-b border-white/10 flex flex-col gap-3 bg-surface-container/40">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#01e599] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#01e599]"></span>
+                  </span>
+                  <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                    Faollik
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#01e599]/15 text-[#01e599] border border-[#01e599]/30 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#01e599]"></span>
+                  Real-time
                 </span>
               </div>
 
-              {/* Tab Selector Buttons */}
-              <div className="flex items-center gap-1 p-0.5 rounded-lg bg-black/40 border border-white/10 text-[11px] font-mono">
+              {/* Tab Selector Buttons - Full width segmented control */}
+              <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-black/50 border border-white/10 text-xs font-medium">
                 <button
                   type="button"
                   onClick={() => setSidebarTab('feed')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                  className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg whitespace-nowrap transition-all duration-200 cursor-pointer ${
                     sidebarTab === 'feed'
-                      ? 'bg-primary-container text-white font-bold shadow-neon-red'
-                      : 'text-on-surface-variant hover:text-white'
+                      ? 'bg-primary-container text-white font-bold shadow-neon-red ring-1 ring-white/20'
+                      : 'text-on-surface-variant hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  ⚡ Jonli Oqim
+                  <span>⚡</span>
+                  <span className="truncate">Jonli Oqim</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSidebarTab('top')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                  className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg whitespace-nowrap transition-all duration-200 cursor-pointer ${
                     sidebarTab === 'top'
-                      ? 'bg-secondary-container text-on-secondary font-bold shadow-[0_0_10px_rgba(1,229,153,0.3)]'
-                      : 'text-on-surface-variant hover:text-white'
+                      ? 'bg-secondary-container text-on-secondary font-bold shadow-[0_0_12px_rgba(1,229,153,0.3)] ring-1 ring-white/20'
+                      : 'text-on-surface-variant hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  🏆 Bugungi Top
+                  <span>🏆</span>
+                  <span className="truncate">Bugungi Top</span>
                 </button>
               </div>
             </div>
